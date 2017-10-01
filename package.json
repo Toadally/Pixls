@@ -1,0 +1,14 @@
+{
+  "name": "pixeler",
+  "version": "1.0.0",
+  "description": "Another r/place clone",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Drew Gifford",
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^2.0.3"
+  }
+}

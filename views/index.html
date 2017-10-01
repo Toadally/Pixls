@@ -1,0 +1,99 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="/public/fa/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/public/css/style.css">
+
+  <link rel='stylesheet' href='/public/css/load.css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<div class='spin-back'></div><div class='spinner'></div>
+
+<body  style="overflow: hidden">
+<div class="viewport">
+    <div class="panzoom">
+      <!--<img src="http://blog.millermedeiros.com/wp-content/uploads/2010/04/awesome_tiger.svg">-->
+      <canvas id="canvas">
+
+      </canvas>
+    </div>
+    <div class="chatbox">
+      <span class="chat-label">Chat</span> <i id="chatselect" class="fa fa-plus"></i>
+      <div class="feed">
+        <table>
+        </table>
+      </div>
+
+      <div class="chat">
+        <input maxlength=128 class="chatInput" type="text"><button class="sendchat">Send</button>
+      </div>
+
+      <div class="addName">
+        <h1>Choose a Name</h1>
+        <input maxlength=16 type="text"><br>
+        <button class="setname">Set Name</button><br><br>
+        <span style="color: #ed4337" class="error"></span>
+
+      </div>
+    </div>
+</div>
+<div class="developer">
+  Pixls.io<br>
+  <span>By Drew Gifford</span>
+</div>
+<div class="info">
+  <span id="infotxt">Place a pixel by double clicking. Every 3 seconds, you can place a pixel.<br><br></span>
+    <i class="fa fa-user-o fa-3x"></i>&nbsp;<span id="userCt">0</span><br><br>
+    <div class="timeBox"><i class="fa fa-circle-o-notch fa-spin fa-3x"></i>&nbsp;<span id="time">0:00</span></div>
+
+  </span>
+</div>
+<div class="mobileonly">
+  <span>You are in view-only mode. To edit, connect with a computer.</span>
+</div>
+<div class="footer">
+
+  <div class="palette">
+    <div class="white"></div>
+    <div class="lightGray"></div>
+    <div class="gray"></div>
+    <div class="black"></div>
+    <div class="pink"></div>
+    <div class="red"></div>
+    <div class="orange"></div>
+    <div class="brown"></div>
+    <div class="yellow"></div>
+    <div class="lime"></div>
+    <div class="green"></div>
+    <div class="sky"></div>
+    <div class="cyan"></div>
+    <div class="blue"></div>
+    <div class="lightPurple"></div>
+    <div class="purple"></div>
+  </div>
+</div>
+</body>
+
+<footer>
+
+  <script src="/public/js/canvas-mouse.js"></script>
+  <script src="/public/js/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  <script src="/public/js/panzoom.js"></script>
+
+  <script>
+
+
+      (function() {
+
+      })();
+  </script>
+    <script async defer src="/public/js/index.js"></script>
+    <script src="/public/js/load.js"></script>
+</footer>
+
+
+
+
+</html>
