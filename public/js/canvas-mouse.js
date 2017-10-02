@@ -1,5 +1,5 @@
 /*!
-	canvas-mouse 0.6.0 alpha
+	canvas-mouse 0.7.0-alpha
 	Copyright (c) 2017 Epistemex
 	MIT license.
 */
@@ -22,7 +22,8 @@ function CanvasMouse(context, options) {
   options = Object.assign({
     handleScale: false,
     handleTransforms: false,
-    matrix: null
+    matrix: null,
+    plugins: []
   }, options);
 
   var
@@ -30,6 +31,7 @@ function CanvasMouse(context, options) {
     defProp = Object.defineProperty.bind(Object),
     ref,
     hasCurrentTransform = ("currentTransform" in context || "mozCurrentTransform" in context),
+    plugins = options.plugins,
     deltaX,
     deltaY,
     scaleX,
@@ -49,8 +51,9 @@ function CanvasMouse(context, options) {
 
   --------------------------------------------------------------------*/
 
+  // check if we have matrix support
   if (doTransforms && !hasCurrentTransform && !matrix) {
-    console.log("Browser doesn't support currentTransform.");
+    console.log("currentTransform not supported by browser");
     doTransforms = false;
   }
 
@@ -105,7 +108,8 @@ function CanvasMouse(context, options) {
   function _basic(e) {
     return {
       x: e.clientX - deltaX,
-      y: e.clientY - deltaY
+      y: e.clientY - deltaY,
+      timeStamp: e.timeStamp
     }
   }
 
@@ -124,23 +128,32 @@ function CanvasMouse(context, options) {
       imatrix;
 
     // Convert from SVGMatrix (used by Chrome in experimental mode)
-    if (currentMatrix instanceof SVGMatrix) currentMatrix = DOMMatrix.fromMatrix(currentMatrix);
+    if (currentMatrix instanceof SVGMatrix)
+      currentMatrix = DOMMatrix.fromMatrix(currentMatrix);
 
     // Firefox returns Array instead of DOMMatrix..
-    matrix = typeof currentMatrix.a === "undefined" ? new DOMMatrix(currentMatrix) : currentMatrix;
+    matrix = typeof currentMatrix.a === "undefined"
+      ? new DOMMatrix(currentMatrix)
+      : currentMatrix;
 
     // Eventually, get inverse matrix
     imatrix = matrix.invertSelf();
 
     return {
       x: pos.x * imatrix.a + pos.y * imatrix.c + imatrix.e,
-      y: pos.x * imatrix.b + pos.y * imatrix.d + imatrix.f
+      y: pos.x * imatrix.b + pos.y * imatrix.d + imatrix.f,
+      timeStamp: pos.timeStamp
     }
   }
 
   // Transforms the point (if enabled) using the custom Matrix object
   function _transforms2(pos) {
-    return imatrix.applyToPoint(pos.x, pos.y);
+    var newPos = imatrix.applyToPoint(pos.x, pos.y);
+    return {
+      x: newPos.x,
+      y: newPos.y,
+      timeStamp: pos.timeStamp
+    }
   }
 
   /*--------------------------------------------------------------------
@@ -160,6 +173,11 @@ function CanvasMouse(context, options) {
     var pos = _basic(event);
     if (doScale) pos = _scale(pos);
     if (doTransforms) pos = transform(pos);
+    if (plugins.length) {
+      for(var i = 0; i < plugins.length; i++) {
+        pos = plugins[i].handler(event, pos);
+      }
+    }
     return pos
   };
 
@@ -184,8 +202,28 @@ function CanvasMouse(context, options) {
 
     return me.getPos({
       clientX: _x / scaleX + deltaX,
-      clientY: y / scaleY + deltaY
+      clientY: y / scaleY + deltaY,
+      timestamp: Date.now()
     })
+  };
+
+  /**
+   * Adds a plugin that is an object providing a `handler()` method
+   * which takes original event and a point as argument in that order.
+   * @param {*} plugin - plugin object to add
+   */
+  this.addPlugin = function(plugin) {
+    if (plugins.indexOf(plugin) < 0) plugins.push(plugin);
+  };
+
+  /**
+   * Removes a previously added plugin object. Must be the same instance
+   * as added.
+   * @param {*} plugin
+   */
+  this.removePlugin = function(plugin) {
+    var i = plugins.indexOf(plugin);
+    if (i > -1) plugins.splice(i, 1);
   };
 
   /**
@@ -273,6 +311,7 @@ function CanvasMouse(context, options) {
  * @prop {Matrix} [matrix=null] - to support broader range of browser a custom matrix object can be passed already bound
  *  to the current context (same as passed as argument). Using a custom matrix will require the transforms to be called on this
  *  instead of the context itself.
+ *  @prop {Array} [plugins] - array holding plugin objects. Plugins can be added and removed at a later point too.
  */
 
 /**
@@ -280,4 +319,5 @@ function CanvasMouse(context, options) {
  * @name Point
  * @prop {number} x - floating point number for x position
  * @prop {number} y - floating point number for y position
+ * @prop {number} timestamp - timestamp for when event happened
  */
