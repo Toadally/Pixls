@@ -15,6 +15,15 @@ var name;
 var slid = true;
 
 
+socket.on('disconnect', function(){
+  $(".lostConnection").fadeIn(750);
+});
+
+socket.on('connect', function(){
+  $(".lostConnection").fadeOut(750);
+});
+
+
 
 $panzoom.parent().on('mousewheel.focal', function( e ) {
   e.preventDefault();
