@@ -303,7 +303,7 @@ function countdown(ct){
   $("#time").html("0:0"+ct);
   var counts = ct-1;
   var ctd = setInterval(function(){
-    if(counts == 0){
+    if(counts <= 0){
 
       $(".timeBox").css("display","none");
       clearInterval(ctd);
