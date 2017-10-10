@@ -239,7 +239,6 @@ canvas {
   height: calc(80vh - 76px);
   image-rendering: pixelated;
   /*margin-top: 10vh;*/
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
 }
 .panzoom {
   display: block;
